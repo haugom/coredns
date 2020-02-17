@@ -59,6 +59,7 @@ func (h *dnsHc) Check(p *Proxy) error {
 func (h *dnsHc) send(addr string) error {
 	ping := new(dns.Msg)
 	ping.SetQuestion(".", dns.TypeNS)
+	ping.MsgHdr.RecursionDesired = false
 
 	m, _, err := h.c.Exchange(ping, addr)
 	// If we got a header, we're alright, basically only care about I/O errors 'n stuff.
