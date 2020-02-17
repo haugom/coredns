@@ -121,6 +121,7 @@ func parseStanza(c *caddy.Controller) (*Forward, error) {
 			f.proxies[i].SetTLSConfig(f.tlsConfig)
 		}
 		f.proxies[i].SetExpire(f.expire)
+		f.proxies[i].SetRecursionDesired(f.hcRecursionDesired)
 	}
 
 	return f, nil
@@ -161,6 +162,11 @@ func parseBlock(c *caddy.Controller, f *Forward) error {
 			return fmt.Errorf("health_check can't be negative: %d", dur)
 		}
 		f.hcInterval = dur
+	case "health_check_prefer_no_recursion":
+		if c.NextArg() {
+			return c.ArgErr()
+		}
+		f.hcRecursionDesired = false
 	case "force_tcp":
 		if c.NextArg() {
 			return c.ArgErr()

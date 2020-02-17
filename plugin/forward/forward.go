@@ -28,9 +28,10 @@ var log = clog.NewWithPlugin("forward")
 type Forward struct {
 	concurrent int64 // atomic counters need to be first in struct for proper alignment
 
-	proxies    []*Proxy
-	p          policy.Policy
-	hcInterval time.Duration
+	proxies            []*Proxy
+	p                  policy.Policy
+	hcInterval         time.Duration
+	hcRecursionDesired bool
 
 	from    string
 	ignored []string
@@ -52,7 +53,7 @@ type Forward struct {
 
 // New returns a new Forward.
 func New() *Forward {
-	f := &Forward{maxfails: 2, tlsConfig: new(tls.Config), expire: defaultExpire, p: new(policy.Random), from: ".", hcInterval: hcInterval}
+	f := &Forward{maxfails: 2, tlsConfig: new(tls.Config), expire: defaultExpire, p: new(policy.Random), from: ".", hcInterval: hcInterval, hcRecursionDesired: true}
 	return f
 }
 

@@ -31,11 +31,13 @@ func TestSetup(t *testing.T) {
 		{"forward . 127.0.0.1:8080", false, ".", nil, 2, options{}, ""},
 		{"forward . [::1]:53", false, ".", nil, 2, options{}, ""},
 		{"forward . [2003::1]:53", false, ".", nil, 2, options{}, ""},
+		{"forward . 127.0.0.1 {\nhealth_check_prefer_no_recursion\n}\n", false, ".", nil, 2, options{}, ""},
 		// negative
 		{"forward . a27.0.0.1", true, "", nil, 0, options{}, "not an IP"},
 		{"forward . 127.0.0.1 {\nblaatl\n}\n", true, "", nil, 0, options{}, "unknown property"},
 		{`forward . ::1
 		forward com ::2`, true, "", nil, 0, options{}, "plugin"},
+		{"forward . 127.0.0.1 {\nhealth_check_prefer_no_recursion true\n}\n", true, ".", nil, 2, options{}, "Wrong argument count or unexpected line ending"},
 	}
 
 	for i, test := range tests {
